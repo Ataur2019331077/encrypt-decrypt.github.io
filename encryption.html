@@ -1,0 +1,180 @@
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <title>Decryption</title>
+    <link rel="stylesheet" href="style_dec.css">
+    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+
+</head>
+<body>
+    <div class="main">
+
+        <h2 style="color: greenyellow;">Welcome to <b>Decryption</b> Page</h2>
+
+        <div class="home">
+            <a href="index.html"><button class="btn btn-primary">Home</button></a>
+            <a href="enc_dec.html"><button class="btn btn-info">Encryption</button></a>
+        </div>
+
+        <div class="user_name">
+            <h3 style="color: dimgrey;">User Name : <span id="user_name" style="color: green;"></span></h3>
+            <h5 style="color: rgb(10, 28, 145);">Your mail : <a href="https://mail.google.com/mail"><span id="user_email"></span></a></h5>
+        </div>
+
+        <script>
+            const f_name=localStorage.getItem('user_name');
+            document.getElementById('user_name').textContent = f_name;
+            const f_email=localStorage.getItem('user_email');
+            document.getElementById('user_email').textContent = f_email;
+        </script>
+
+        <style>
+            #input_text {
+                width: 60%;
+                height: 80px;
+                font-size: 18px;
+                padding: 10px;
+                margin-top: 20px;
+                margin-left: 20%;
+                border: 1px solid black;
+                white-space: pre-wrap;
+                overflow-wrap: break-word;
+                word-wrap: break-word;
+                background-color: rgb(19, 111, 154);
+            }
+
+            #out_text {
+                width: 60%;
+                height: 80px;
+                font-size: 18px;
+                padding: 10px;
+                margin-top: 20px;
+                margin-left: 20%;
+                border: 1px solid black;
+                white-space: pre-wrap;
+                overflow-wrap: break-word;
+                word-wrap: break-word;
+                background-color: rgb(4, 162, 151);
+            }
+
+            #passwordBtn {
+                background-color:rgb(213, 197, 13); 
+            }
+
+            #passwordBtn:hover {
+                background-color:rgb(7, 121, 11); 
+            }
+
+            #COPY {
+                margin-top: -70px;
+            }
+
+            
+
+
+        </style>
+
+
+        <div class="passcode">
+            <h3 style="color:rgb(217, 227, 178)">Enter your password to <b><i>Decode</i></b> the text</h3>
+            <input type="password" id="passcode" name="passcode"/>
+            <input type="button" id="passwordBtn" value="Submit " class="btn btn-success"/><br><br>
+        </div>
+        
+        <div class="input_text">
+            <h3 style="color:rgb(171, 7, 42)">Enter your text to <b><i>Decode</i></b></h3>
+            <input type="text" id="input_text" name="input_text"/>
+            <input type="button" id="input_textBtn" value="Decode " class="btn btn-success"/><br><br>
+        </div>
+
+        <div class="out_text">
+            <h3 style="color:rgb(9, 240, 156)">Here your <b><i>Decode</i></b> text</h3>
+            <textarea id="out_text" style="color: rgb(126, 7, 29);"></textarea>
+            <button id="COPY" class="btn btn-danger" onclick="myFunction()">copy</button>
+        </div>
+
+        <script>
+            function myFunction() {
+                var copyText = document.getElementById("out_text");
+                copyText.select();
+                document.execCommand("copy");
+                alert("Text copied to clipboard: " + copyText.value);
+            }
+        </script>
+
+        <py-script>
+            from js import document
+            from pyodide import create_proxy
+            import string
+
+            user_password = 'null'
+            user_text = 'non'
+
+            whole = [string.ascii_lowercase, string.ascii_uppercase, string.punctuation, string.digits]
+
+            def encrypt(text, shift, alphabets):
+                
+                def shift_alphabet(alphabet):
+                    return alphabet[shift:] + alphabet[:shift]
+                
+                shifted_alphabet = tuple(map(shift_alphabet, alphabets))
+                final_alphabet = ''.join(alphabets)
+                final_shifted_alphabate = ''.join(shifted_alphabet)
+                table = str.maketrans(final_alphabet, final_shifted_alphabate)
+                
+                return text.translate(table)
+
+
+            def test_password(e):
+                inp = Element('passcode').element
+                text = inp.value
+                global user_password
+                user_password = text
+                inp.value = ""
+            
+            
+            pass_proxy = create_proxy(test_password)
+            pass_button = document.getElementById("passwordBtn")
+            pass_button.addEventListener("click", pass_proxy)
+
+            def test_text(e):
+                inp = Element('input_text').element
+                text = inp.value
+
+                ascii_pass = [ord(c) for c in user_password]
+
+                ascii_val = 0
+
+                for x in ascii_pass:
+                    ascii_val += x
+                
+                ascii_val %= 10;
+
+                if ascii_val==0:
+                    ascii_val = 23
+
+                ans = text.replace("$", " ")
+                ans = ans[::-1]
+                user_text = encrypt(ans, 26-ascii_val, whole) 
+
+                
+
+                inp.value = ""
+                pyscript.write("out_text", str(user_text))
+
+
+            text_proxy = create_proxy(test_text)
+            text_button = document.getElementById("input_textBtn")
+            text_button.addEventListener("click", text_proxy)
+
+
+        </py-script>
+
+    </div>
+    
+</body>
+</html>

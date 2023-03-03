@@ -1,0 +1,52 @@
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Encryption-Decryption</title>
+    <link rel="stylesheet" href="style.css">
+    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+</head>
+
+<body>
+    <div class="main">
+        <form id="form">
+            <div class="input_name">
+                <label for="user_name" style="color: rgba(98, 202, 216, 0.977); font-size: large;"><b><i>User Name</i></b></label>
+                <input id="user_name" type="text"><br><br>
+                <label for="user_email" style="color: rgb(98, 202, 216, 0.977); font-size: large;"><b><i>Enter Email</i></b></label>
+                <input id="user_email" type="email">
+            </div>
+
+            <div class="submit_btn">
+                <button type="submit" class="btn btn-success">submit</button>
+            </div>
+        </form>
+        <script>
+            const f_email = document.getElementById('user_email');
+            const f_name = document.getElementById('user_name');
+
+
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                const f_nameValue = f_name.value;
+                const f_emailValue = f_email.value;
+                localStorage.setItem('user_name', f_nameValue);
+                localStorage.setItem('user_email', f_emailValue);
+                window.location.href = 'enc_dec.html';
+                window.location.href = 'encryption.html';
+            })
+
+        </script>
+
+
+        <br><br>
+        
+        <br><br>
+    </div>
+
+</body>
+
+</html>
